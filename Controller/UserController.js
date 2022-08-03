@@ -146,3 +146,30 @@ export const CekPasswordLama = async (req, res) => {
     res.status(404).json({ msg: "Username Tidak Ditemukan" });
   }
 };
+
+/* Ganti Password */
+export const GantiPassword = async (req, res) => {
+  const {name, password} = req.body;
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hashSync(password, salt);
+  try {
+    await Users.update(
+      {
+        password: hashPassword,
+      },
+      {
+        where: {
+          name: name,
+        },
+      }
+    )
+  
+  res.json({
+    data: req.body,
+    msg: "Berhasil Mengubah Password",
+  })
+
+  } catch (error) {
+    res.status(404).json({ msg: "Tidak Dapat Terhubung Ke Database" });
+  }
+};

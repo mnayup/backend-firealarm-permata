@@ -120,6 +120,36 @@ export const getAllNotif = async (req, res) => {
   }
 };
 
+export const getAllNotifUseEffect = async (req, res) => {
+  console.log("function jalan");
+  try {
+    let data = {
+      online: 0,
+      offline: 0,
+      kebakaran: 0,
+      jumlahCabang: 0,
+    };
+    const NotifAll = await Notification.findAll();
+    NotifAll.map((val) => {
+      if (val.cabang != "") {
+        data.jumlahCabang++;
+      }
+      if (val.statuss == "Offline" && val.cabang != "") {
+        data.offline++;
+      } else if (val.statuss == "Online" && val.cabang != "") {
+        data.online++;
+      }
+      if (val.kejadian == "Kebakaran" && val.cabang != "") {
+        data.kebakaran++;
+      }
+    });
+
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllCabang = async (req, res) => {
   try {
     const Cabang = await Notification.findAll({
